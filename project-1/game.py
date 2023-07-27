@@ -12,12 +12,11 @@ class Game:
 
     def display_board(self):
         print(f"{self.board[0]}|{self.board[1]}|{self.board[2]}")
-        # print("-----")
         print(f"{self.board[3]}|{self.board[4]}|{self.board[5]}")
-        # print("-----")
         print(f"{self.board[6]}|{self.board[7]}|{self.board[8]}")
+        print('\n')
 
-    def update_board(self, choice):
+    def update_board(self, choice: int):
         if choice < 1 or choice > 9:
             raise ValueError("Choice must be between 1 and 9")
         self.board[choice - 1] = self.current_player.symbol
@@ -34,5 +33,44 @@ class Game:
         for i in range(0, 3, 6):
             if self.board[i] == self.board[i + 1] == self.board[i + 2] != " ":
                 return True
+            
+        # Check columns
+        for i in range(3):
+            if self.board[i] == self.board[i + 3] == self.board[i + 6] != " ":
+                return True
+            
+        # Check diagonals
+        if self.board[0] == self.board[4] == self.board[8] != " ":
+            return True
+        if self.board[2] == self.board[4] == self.board[6] != " ":
+            return True
+            
 
         return False
+    
+    @property
+    def tie(self):
+        if self.game_over:
+            return False
+        
+        for entry in self.board:
+            if entry == " ":
+                return False
+            
+        return True
+    
+    @property
+    def winner(self):
+        if not self.game_over:
+            return None 
+            
+        """
+        Account for the fact that the game will change turns in the while loop
+        after before checking if the game is over
+        """
+        if self.current_player == self.player1:
+            return self.player2
+        
+        return self.player1
+        
+    
